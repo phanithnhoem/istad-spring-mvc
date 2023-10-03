@@ -1,6 +1,7 @@
 package com.istad.demo.repository;
 
 import com.istad.demo.model.Product;
+import com.istad.demo.repository.provider.ProductProvider;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository {
 
-    @Select("SELECT * FROM products")
+    @Select("SELECT * FROM products ORDER BY id DESC")
     @Results(id = "productResultMap", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "name", column = "name"),
@@ -27,20 +28,21 @@ public interface ProductRepository {
     @ResultMap("productResultMap")
     Optional<Product> selectProductById(@Param("id") Integer id);
 
-    @Insert("""
-            INSERT INTO products (name, slug, description, price, in_stock, supplier_id)
-            VALUES (#{name}, #{slug}, #{description}, #{price}, #{inStock}, supplier_id = #{supplier.id});
-            """)
-    @ResultMap("productResultMap")
-    void insertProduct(Product product);
 
-    @Update("""
-            UPDATE products
-            SET  name = #{name}, slug = #{slug}, description = #{description}, price = #{price}, in_stock = #{inStock}, supplier_id = #{supplier.id}
-            WHERE id = #{id};
-           """)
-    @ResultMap("productResultMap")
-    void updateProduct(Integer id, Product product);
+    @InsertProvider(ProductProvider.class)
+    // Get ID that has been generated primary key from table and set this id to property object automatically
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    void insertProduct(@Param("p") Product product);
+
+    @InsertProvider(ProductProvider.class)
+    void insertProductCategories(@Param("proId") Integer productId,  @Param("cateId") Integer categoryId);
+
+
+    @UpdateProvider(ProductProvider.class)
+    void updateProductInStock(@Param("proId") Integer id, @Param("p") Product product);
+
+//    @UpdateProvider(ProductProvider.class)
+//    void updateProductCategories(@Param("proId") Integer id, @Param("cateId") Integer categoryId);
 
     @Delete("DELETE FROM products WHERE id = #{id}")
     void deleteProduct(Integer id);

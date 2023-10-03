@@ -17,10 +17,7 @@ public class Product {
     private String description;
     private Double price;
     private Boolean inStock;
+    // Has IS-A relationship
     private Supplier supplier;
     private List<Category> categories;
-
-    public Supplier getSupplier(){
-        return supplier;
-    }
 }

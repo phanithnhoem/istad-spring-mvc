@@ -1,5 +1,7 @@
 package com.istad.demo.controller;
 
+import com.istad.demo.dto.CreateProductDto;
+import com.istad.demo.dto.UpdateProductDto;
 import com.istad.demo.model.Product;
 import com.istad.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +31,14 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createNewProduct(@RequestBody Product product){
-        productService.createNewProduct(product);
+    public void createNewProduct(@RequestBody CreateProductDto createProductDto){
+        productService.createNewProduct(createProductDto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void updateProduct(@PathVariable("id") Integer id, @RequestBody Product product){
-        productService.updateProductById(id, product);
+    public void updateProductInStock(@PathVariable("id") Integer id, @RequestBody UpdateProductDto updateProductDto){
+        productService.updateProductInStock(id, updateProductDto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
